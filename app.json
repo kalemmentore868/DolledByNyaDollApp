@@ -4,11 +4,11 @@
     "slug": "dolled",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/dolledlogo.png",
     "scheme": "dolled",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/dolledlogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#2F80ED"
     },

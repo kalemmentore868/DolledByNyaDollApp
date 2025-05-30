@@ -9,7 +9,9 @@ import InputField from "@/components/InputField";
 // import OAuth from "@/components/OAuth";
 import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
-// import { fetchAPI } from "@/lib/fetch";
+import { UserService } from "@/services/UserService";
+import { CreateUser } from "@/types/User";
+import { showError } from "@/utils/errors";
 
 const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -52,15 +54,18 @@ const SignUp = () => {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verification.code,
       });
-      if (completeSignUp.status === "complete") {
-        // await fetchAPI("/(api)/user", {
-        //   method: "POST",
-        //   body: JSON.stringify({
-        //     name: form.name,
-        //     email: form.email,
-        //     clerkId: completeSignUp.createdUserId,
-        //   }),
-        // });
+      if (
+        completeSignUp.status === "complete" &&
+        completeSignUp.createdUserId
+      ) {
+        const data: CreateUser = {
+          name: form.name,
+          email: form.email,
+          clerk_user_id: completeSignUp.createdUserId,
+          addresses: [],
+        };
+        await UserService.create(data);
+
         await setActive({ session: completeSignUp.createdSessionId });
         setVerification({
           ...verification,
@@ -74,13 +79,9 @@ const SignUp = () => {
         });
       }
     } catch (err: any) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      setVerification({
-        ...verification,
-        error: err.errors[0].longMessage,
-        state: "failed",
-      });
+      const msg = err?.errors?.[0]?.longMessage ?? "Verification failed";
+      setVerification({ ...verification, error: msg, state: "failed" });
+      showError(msg);
     }
   };
   return (
