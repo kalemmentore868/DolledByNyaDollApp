@@ -10,12 +10,15 @@ import InputField from "@/components/InputField";
 import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
 import { UserService } from "@/services/UserService";
-import { CreateUser } from "@/types/User";
+import { setDataInStorage, STORAGE_NAMES } from "@/storage/localStorage";
+import { useUserStore } from "@/store";
+import { CreateUser, RoleCustomer } from "@/types/User";
 import { showError } from "@/utils/errors";
 
 const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const { setUser } = useUserStore();
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -64,7 +67,20 @@ const SignUp = () => {
           clerk_user_id: completeSignUp.createdUserId,
           addresses: [],
         };
-        await UserService.create(data);
+        const result = await UserService.create(data);
+
+        if (result) {
+          const userData = {
+            ...data,
+            id: result,
+            role: RoleCustomer,
+            loyalty_points: 0,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+          setUser(userData);
+          setDataInStorage(STORAGE_NAMES.userProfile, userData);
+        }
 
         await setActive({ session: completeSignUp.createdSessionId });
         setVerification({

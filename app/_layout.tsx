@@ -1,18 +1,16 @@
+import { registerTokenGetter } from "@/services/utils";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React from "react";
-
-import { registerTokenGetter } from "@/services/utils";
-import { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import "../global.css";
 
 function AppProviders({ children }: { children: React.ReactNode }) {
   const { getToken } = useAuth();
 
-  // register exactly once
+  /* 1. expose a fresh JWT to your fetch helper */
   useEffect(() => {
     registerTokenGetter(() => getToken({ skipCache: true }));
   }, [getToken]);

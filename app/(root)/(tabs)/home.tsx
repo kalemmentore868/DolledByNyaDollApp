@@ -1,15 +1,17 @@
 import { SignOutButton } from "@/components/SignOutButton";
-import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
+import { useUserStore } from "@/store";
+import { SignedIn, SignedOut } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
-import { Text, View } from "react-native";
+import { Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Page() {
-  const { user } = useUser();
+  const { user } = useUserStore();
 
   return (
-    <View>
+    <SafeAreaView>
       <SignedIn>
-        <Text>Hello {user?.emailAddresses[0].emailAddress}</Text>
+        <Text className="text-red">Hello {user?.name}</Text>
       </SignedIn>
       <SignOutButton />
       <SignedOut>
@@ -20,6 +22,6 @@ export default function Page() {
           <Text>Sign up</Text>
         </Link>
       </SignedOut>
-    </View>
+    </SafeAreaView>
   );
 }
