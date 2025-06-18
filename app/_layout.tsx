@@ -1,4 +1,7 @@
 import { registerTokenGetter } from "@/services/utils";
+import { getDataInStorage, STORAGE_NAMES } from "@/storage/localStorage";
+import { useUserStore } from "@/store";
+import { User } from "@/types/User";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { useFonts } from "expo-font";
@@ -9,11 +12,25 @@ import "../global.css";
 
 function AppProviders({ children }: { children: React.ReactNode }) {
   const { getToken } = useAuth();
+  const { user, setUser } = useUserStore();
 
   /* 1. expose a fresh JWT to your fetch helper */
   useEffect(() => {
     registerTokenGetter(() => getToken({ skipCache: true }));
   }, [getToken]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!user) {
+        const data = await getDataInStorage(STORAGE_NAMES.userProfile);
+        if (data.success) {
+          setUser(data.data as User);
+        }
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return <>{children}</>;
 }

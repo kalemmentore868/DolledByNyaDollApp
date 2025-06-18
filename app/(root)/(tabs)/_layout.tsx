@@ -34,12 +34,11 @@ export default function Layout() {
         /* pill container */
         tabBarStyle: {
           position: "absolute",
-          bottom: 20,
-          left: 20,
-          right: 20,
+          bottom: 30,
+
           height: 70,
           borderRadius: 40,
-
+          width: "100%",
           backgroundColor: "#333333",
           borderTopWidth: 0, // remove default hairline
           paddingHorizontal: 24, // nice inner breathing room
