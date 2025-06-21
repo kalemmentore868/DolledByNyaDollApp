@@ -1,6 +1,7 @@
 import { useUserStore } from "@/store";
 import { SignedIn } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -16,9 +17,10 @@ const features = [
     icon: "calendar-outline",
   },
   {
-    title: "Shop Products",
+    title: "Shop Products & Services",
     subtitle: "Beauty & wellness items",
     icon: "bag-outline",
+    route: "products", // Navigate to products page
   },
   {
     title: "Your Body Goals",
@@ -39,6 +41,11 @@ const features = [
     title: "Work With Dolled",
     subtitle: "Beauty & wellness job listings",
     icon: "briefcase-outline",
+  },
+  {
+    title: "Courses",
+    subtitle: "Learn beauty, wellness & business",
+    icon: "school-outline", // 📘 Uses Ionicons school icon
   },
 ];
 
@@ -63,6 +70,8 @@ export default function HomePage() {
               <TouchableOpacity
                 key={feature.title}
                 className="bg-primary-500 rounded-2xl px-5 py-6 shadow-md"
+                //@ts-ignore
+                onPress={() => router.push(`/(root)/${feature.route || ""}`)}
               >
                 <View className="flex-row items-center justify-between">
                   <View className="flex-row items-center gap-3">
