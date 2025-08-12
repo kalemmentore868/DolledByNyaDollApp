@@ -12,7 +12,7 @@ import { icons, images } from "@/constants";
 import { UserService } from "@/services/UserService";
 import { setDataInStorage, STORAGE_NAMES } from "@/storage/localStorage";
 import { useUserStore } from "@/store";
-import { CreateUser, RoleCustomer } from "@/types/User";
+import { CreateUser } from "@/types/User";
 import { showError } from "@/utils/errors";
 
 const SignUp = () => {
@@ -70,16 +70,8 @@ const SignUp = () => {
         const result = await UserService.create(data);
 
         if (result) {
-          const userData = {
-            ...data,
-            id: result,
-            role: RoleCustomer,
-            loyalty_points: 0,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          };
-          setUser(userData);
-          setDataInStorage(STORAGE_NAMES.userProfile, userData);
+          setUser(result);
+          setDataInStorage(STORAGE_NAMES.userProfile, result);
         }
 
         await setActive({ session: completeSignUp.createdSessionId });

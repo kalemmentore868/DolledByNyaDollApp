@@ -7,6 +7,7 @@ export type Variation = {
 };
 
 export interface Product {
+  _id: string;
   wordpress_id: number;
   type: "simple" | "variable" | "booking";
   name: string;

@@ -4,11 +4,34 @@ import { useUserStore } from "@/store";
 import { User } from "@/types/User";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
+import NetInfo from "@react-native-community/netinfo";
+import {
+  focusManager,
+  onlineManager,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useCallback, useEffect } from "react";
+import { AppState, Platform } from "react-native";
 import "../global.css";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      retry: 2,
+    },
+  },
+});
+
+function onAppStateChange(status: string) {
+  if (Platform.OS !== "web") {
+    focusManager.setFocused(status === "active");
+  }
+}
 
 function AppProviders({ children }: { children: React.ReactNode }) {
   const { getToken } = useAuth();
@@ -18,6 +41,17 @@ function AppProviders({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     registerTokenGetter(() => getToken({ skipCache: true }));
   }, [getToken]);
+
+  useEffect(() => {
+    const unsub = NetInfo.addEventListener((state) =>
+      onlineManager.setOnline(!!state.isConnected)
+    );
+    const sub = AppState.addEventListener("change", onAppStateChange);
+    return () => {
+      unsub();
+      sub.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -32,7 +66,9 @@ function AppProviders({ children }: { children: React.ReactNode }) {
     fetchUser();
   }, []);
 
-  return <>{children}</>;
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 }
 
 export default function RootLayout() {

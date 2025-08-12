@@ -5,10 +5,10 @@ import { customAuthFetch } from "./utils";
 export class UserService {
   /* 1. POST /users – create */
   static async create(user: CreateUser) {
-    const res = await safe<{ inserted_id: string }>(
+    const res = await safe<{ data: User }>(
       customAuthFetch("users", "POST", user)
     );
-    return res?.inserted_id ?? null;
+    return res?.data ?? null;
   }
 
   /* 2. GET /users/{clerkId} */

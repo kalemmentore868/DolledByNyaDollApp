@@ -106,10 +106,7 @@ export async function customAuthFetch<T = any>(
   if (!res.ok) {
     const errObj = await res.json().catch(() => ({}));
     console.log("[AuthFetch] Error:", errObj);
-    const msg =
-      errObj?.message ?? // preferred
-      errObj?.error ?? // <— your Go API today
-      `Request failed (${res.status})`;
+    const msg = errObj.response?.data?.error?.message;
     throw new Error(msg);
   }
   return res.json();

@@ -26,7 +26,7 @@ export interface Address {
 /* ------------------------------------------------------------------ */
 
 export interface User {
-  id: ObjectId; // _id
+  _id: ObjectId; // _id
 
   // Clerk / auth
   clerk_user_id: string;

@@ -33,6 +33,7 @@ const SignIn = () => {
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
         const user = await UserService.login();
+        console.log(user);
 
         if (user) {
           setUser(user);

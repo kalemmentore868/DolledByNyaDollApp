@@ -7,7 +7,7 @@ export async function safe<T>(p: Promise<T>): Promise<T | null> {
     return await p;
   } catch (err: any) {
     console.log(err);
-    const msg = err?.message ?? "Something went wrong";
+    const msg = err.response?.data?.error?.message;
     showError(msg);
     return null;
   }
